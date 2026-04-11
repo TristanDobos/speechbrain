@@ -58,7 +58,7 @@ class SpkSimWavLM(MetricStats):
             self.model = AutoModelForAudioXVector.from_pretrained(
                 model_hub, cache_dir=save_path,
                     local_files_only=True,
-                    use_safetensors=True,
+                    use_safetensors=False,
             )
         self.clear()
 
