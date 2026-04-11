@@ -471,11 +471,9 @@ if __name__ == "__main__":
         hparams = load_hyperpyyaml(fin, overrides)
 
     print("the overrides are:")
-    for key, value in overrides.items():
-        print(f"  {key}: {value}")
+    print(overrides)
     print("hparams are:")
-    for key, value in hparams.items():
-        print(f"  {key}: {value}")
+    print(hparams)
 
     # If --distributed_launch then create ddp_init_group with the right communication protocol
     sb.utils.distributed.ddp_init_group(run_opts)
