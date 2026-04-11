@@ -3,7 +3,7 @@
 # Authors: Luca Della Libera 2025
 # ###########################################################################################
 
-experiment_name: bsq
+experiment_name: bsq-newest
 
 # Seed needs to be set at top of YAML
 seed: 0
