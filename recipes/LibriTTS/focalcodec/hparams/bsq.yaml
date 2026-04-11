@@ -16,8 +16,8 @@ valid_json: !ref <save_folder>/valid.json
 test_json: !ref <save_folder>/test.json
 train_split:
   - train-clean-100
-  - train-clean-360
-  - train-other-500
+#   - train-clean-360
+#   - train-other-500
 valid_split: [dev-clean]
 test_split: [test-clean]
 skip_prep: False
