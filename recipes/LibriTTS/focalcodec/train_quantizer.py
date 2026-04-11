@@ -17,6 +17,8 @@ import torch
 import torchaudio
 from hyperpyyaml import load_hyperpyyaml
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 import speechbrain as sb
 from speechbrain.dataio.dataio import write_audio
 from speechbrain.dataio.sampler import DynamicBatchSampler
@@ -26,7 +28,7 @@ from speechbrain.utils.distributed import if_main_process, run_on_main
 class Quantization(sb.Brain):
     def compute_forward(self, batch, stage):
         """Forward pass."""
-        batch = batch.to(self.device)
+        batch = batch.to(device)
         sig, lens = batch.sig
 
         # Augment if specified
@@ -35,7 +37,7 @@ class Quantization(sb.Brain):
 
         # Extract features
         with torch.no_grad():
-            self.hparams.encoder.to(self.device).eval()
+            self.hparams.encoder.to(device).eval()
             feats, *encoder_state_ = self.hparams.encoder(sig, length=lens)
 
         # Forward model
@@ -73,7 +75,7 @@ class Quantization(sb.Brain):
         IDs = batch.id
         sig, lens = batch.sig
 
-        self.hparams.decoder.to(self.device).eval()
+        self.hparams.decoder.to(device).eval()
         hyp_sig, *decoder_state_ = self.hparams.decoder(hyp_feats)
         rec_sig, *decoder_state_ = self.hparams.decoder(feats)
 

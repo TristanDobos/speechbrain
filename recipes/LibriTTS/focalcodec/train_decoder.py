@@ -22,6 +22,7 @@ from speechbrain.dataio.dataio import write_audio
 from speechbrain.dataio.sampler import DynamicBatchSampler
 from speechbrain.utils.distributed import if_main_process, run_on_main
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Resynthesis(sb.Brain):
     def fit_batch(self, batch):
@@ -30,7 +31,7 @@ class Resynthesis(sb.Brain):
 
         # Train discriminator
         with torch.autocast(
-            device_type=torch.device(self.device).type,
+            device_type=torch.device(device).type,
             dtype=amp.dtype,
             enabled=self.precision != torch.float32,
         ):
@@ -48,7 +49,7 @@ class Resynthesis(sb.Brain):
 
         # Train generator
         with torch.autocast(
-            device_type=torch.device(self.device).type,
+            device_type=torch.device(device).type,
             dtype=amp.dtype,
             enabled=self.precision != torch.float32,
         ):
@@ -74,7 +75,7 @@ class Resynthesis(sb.Brain):
 
     def extract_feats(self, batch, stage):
         """Extract continuous audio features from waveform."""
-        batch = batch.to(self.device)
+        batch = batch.to(device)
         sig, lens = batch.sig
 
         # Augment if specified
@@ -83,7 +84,7 @@ class Resynthesis(sb.Brain):
 
         # Extract features
         with torch.no_grad():
-            self.hparams.encoder.to(self.device).eval()
+            self.hparams.encoder.to(device).eval()
             feats, *encoder_state_ = self.hparams.encoder(sig, length=lens)
 
         # Extract segments
@@ -100,11 +101,11 @@ class Resynthesis(sb.Brain):
             )
             max_starts = abs_lens - segment_size_feats  # [B]
             starts = (
-                torch.rand(feats.shape[0], device=self.device)
+                torch.rand(feats.shape[0], device=device)
                 * (max_starts + 1).float()
             ).to(torch.long)
             offsets = torch.arange(
-                segment_size_feats, device=self.device
+                segment_size_feats, device=device
             )  # [L]
             idx = starts[:, None] + offsets[None, :]  # [B, L]
             idx_expanded = idx[:, :, None].expand(-1, -1, feats.shape[-1])
@@ -115,7 +116,7 @@ class Resynthesis(sb.Brain):
             )
             starts = starts * self.hparams.generator_hop_length  # [B]
             offsets = torch.arange(
-                segment_size_sig, device=self.device
+                segment_size_sig, device=device
             )  # [L_sig]
             idx = starts[:, None] + offsets[None, :]  # [B, L_sig]
             idx = idx.clamp(max=sig.shape[1] - 1).long()
