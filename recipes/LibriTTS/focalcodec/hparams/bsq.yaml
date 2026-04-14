@@ -23,8 +23,8 @@ test_split: [test-clean]
 skip_prep: False
 
 # Output folders
-output_folder: !ref results/<experiment_name>/<seed>
-save_folder: !ref <output_folder>/save
+output_folder: !ref /mnt/scratch/tmp/xdobos00/focal_results/<experiment_name>/<seed>
+save_folder: !ref /mnt/scratch/tmp/xdobos00/focal_results/save
 cache_folder:
   !name:huggingface_hub.constants.HUGGINGFACE_HUB_CACHE # Save options
 
