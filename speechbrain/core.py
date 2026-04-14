@@ -97,6 +97,7 @@ def create_experiment_directory(
                 )
                 with open(hyperparams_to_save, encoding="utf-8") as f:
                     resolved_yaml = resolve_references(f, overrides)
+                print("Saving hyperparameters to %s" % hyperparams_filename)
                 with open(hyperparams_filename, "w", encoding="utf-8") as w:
                     print("# Generated %s from:" % date.today(), file=w)
                     print("# %s" % os.path.abspath(hyperparams_to_save), file=w)
