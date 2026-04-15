@@ -248,7 +248,7 @@ modules:
 
 # Loss functions
 rec_loss: !name:speechbrain.nnet.losses.mse_loss
-  allowed_len_diff: 1
+  allowed_len_diff: 3
   reduction: mean
 
 # Optimizers
